@@ -1,4 +1,3 @@
-
 name: Deploy Static Website to Amazon ECS
 
 on:
@@ -24,14 +23,26 @@ jobs:
     name: Build and deploy to ECS
     runs-on: ubuntu-latest
 
-        steps:
+    steps:
       - name: Checkout source code
         uses: actions/checkout@v4
 
       - name: Inspect GitHub OIDC claims
-        uses: github/actions-oidc-debugger@main
+        uses: actions/github-script@v7
         with:
-          audience: sts.amazonaws.com
+          script: |
+            const token = await core.getIDToken('sts.amazonaws.com');
+            const payload = JSON.parse(
+              Buffer.from(token.split('.')[1], 'base64url').toString('utf8')
+            );
+
+            core.info(JSON.stringify({
+              iss: payload.iss,
+              aud: payload.aud,
+              sub: payload.sub,
+              repository: payload.repository,
+              ref: payload.ref
+            }, null, 2));
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
