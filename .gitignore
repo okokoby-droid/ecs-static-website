@@ -1,3 +1,17 @@
+# Terraform
 .terraform/
-*.tfstate*
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+*.tfplan
+crash.log
+crash.*.log
+
+# AWS credentials and environment files
+.aws/
 .env
+.env.*
+
+# Editor settings
+.vscode/
